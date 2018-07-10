@@ -22,3 +22,8 @@ class BulkWHOISFile(object):
             lines.append(l.rstrip())
         if lines:
             yield BulkWHOISEntry(lines)
+
+    def iter_filtered(self, etype):
+        for entry in self:
+            if entry.type == etype:
+                yield entry
