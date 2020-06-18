@@ -2,18 +2,24 @@ import os
 import re
 import requests
 import shutil
-import urllib2
+import urllib.request as urllib2
 import tempfile
 
 from contextlib import closing
 from bs4 import BeautifulSoup
-
 
 from .rir import RIR
 
 class LACNIC(RIR):
 
     BASE_URL = "https://lacnic.net/cgi-bin/lacnic/stini"
+    NAME = "lacnic"
+
+    STANDARD_KEY_MAP = {
+        "aut-num": "asn",
+        "owner": "name",
+        "changed": "last-modified",
+    }
 
     def __init__(self, uid=None, pwd=None):
         self.uid = uid
@@ -39,6 +45,11 @@ class LACNIC(RIR):
         retv.seek(0)
         return retv
 
+    def construct_intermediate_jsons(self, out_folder, types):
+        # Overridden to call the one-file version of construct_intermediate_jsons.
+        super(LACNIC, self).construct_intermediate_jsons_one_file(out_folder, types)
+
 if __name__ == '__main__':
+    print("Running lacnic.py")
     l = LACNIC(os.environ["LACNIC_UID"], os.environ["LACNIC_PWD"])
-    print l.get_raw()
+    print(l.get_raw())

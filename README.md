@@ -4,7 +4,8 @@
 This is a Python library that allows interacting with the bulk WHOIS data that
 RIRs (e.g., RIPE, ARIN, AFRINIC) provide about the ownership of ASes and netblocks.
 
-
+Run from top level directory using:
+> python2 -m pybulkwhois.target
 
 ### License and Copyright
 

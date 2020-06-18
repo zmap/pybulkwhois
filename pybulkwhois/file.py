@@ -1,27 +1,24 @@
 from .entry import BulkWHOISEntry
 
 class BulkWHOISFile(object):
-
-    def __init__(self, path):
-        if type(path) == basestring:
-            self.f = open(path, 'r')
-        else:
-            self.f = path
+    def __init__(self, path, ignored_keys=[], ignored_values=[]):
+        self.f = path
+        self.ignored_keys   = ignored_keys
+        self.ignored_values = ignored_values
 
     def __iter__(self):
         lines = []
         self.f.seek(0)
         for l in self.f:
-            tl = l.strip()
-            if tl and tl[0] in ("#", "%"):
+            # For Lacnic and Apnic Latin American data bases, letters do not fit w/in utf-8 encoding
+            l = l.decode('latin-1')
+            if l.startswith("#") or l.startswith("%"):
                 continue
-            if lines and not tl:
-                yield BulkWHOISEntry(lines)
+            if l == "\n" and lines:
+                yield BulkWHOISEntry(lines, self.ignored_keys, self.ignored_values)
                 lines = []
-                continue
-            lines.append(l.rstrip())
-        if lines:
-            yield BulkWHOISEntry(lines)
+            if l.strip():
+                lines.append(l)
 
     def iter_filtered(self, etype):
         for entry in self:
