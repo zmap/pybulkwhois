@@ -57,6 +57,8 @@ class ARIN(RIR):
         "OrgNOCHandle": "noc-c",
         "OrgRoutingHandle": "routing-c",
         "OrgDNSHandle": "dns-c",
+        "Mailbox": "e-mail",
+        "OfficePhone": "phone",
     }
 
     def __init__(self, uid=None, pwd=None):
@@ -92,7 +94,8 @@ class ARIN(RIR):
 
     def is_other_org_entry(self, in_json):
         '''
-        This AS entry is from another org if the comment denotes it as such
+        This AS entry is from another org if the comment denotes it as such.
+        This function should only be called after an object is converted to standard form.
         '''
         OTHER_RIR_COMMENTS = [
             "This AS is under LACNIC responsibility",
@@ -105,15 +108,13 @@ class ARIN(RIR):
             "These ASNs have been further assigned to users in",
         ]
 
-        if 'Comment' in in_json:
+        if 'remarks' in in_json:
             for c in OTHER_RIR_COMMENTS:
-                if c in in_json['Comment']:
+                if c in in_json['remarks']:
                     return True
-        if 'RIPE-ASNBLOCK' in in_json['ASName']:
+        if 'RIPE-ASNBLOCK' in in_json['name']:
             return True
         return False
-
-        return 'Comment' in in_json and in_json['Comment'] in OTHER_RIR_COMMENTS
 
 if __name__ == '__main__':
     print("Running arin.py")

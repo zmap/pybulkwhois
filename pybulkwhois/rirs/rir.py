@@ -43,7 +43,9 @@ class RIR(object):
                     # Only write out objects with matching types - some of the RIRs
                     # include dummy objects/other info in these files.
                     if entry.type == t or (t in self.TYPE_MAP and entry.type == self.TYPE_MAP[t]):
-                        out.write(json.dumps(entry.labeled, ensure_ascii = False) + "\n")
+                        # Convert to standard form before writing out.
+                        out_json = self.convert_to_standard_form(entry.labeled)
+                        out.write(json.dumps(out_json, ensure_ascii = False) + "\n")
             logging.debug('Wrote out ' + t + ' objects to ' + out_path)
 
     def construct_intermediate_jsons_one_file(self, out_folder, types):
@@ -57,11 +59,13 @@ class RIR(object):
         for t in types:
             out_path = self.intm_json_path(out_folder, t)
             out_files[t] = open(out_path, 'w+', encoding='latin-1')
-        # afrinic puts all the data in one file, so we don't need to give it a specific type
+        # afrinic and lacnic put all their data in one file, so we don't need to give it a specific type
         db_file = self.get()
         for entry in db_file:
             if entry.type in types:
-                out_files[entry.type].write(json.dumps(entry.labeled, ensure_ascii = False) + "\n")
+                # convert to standard form
+                out_json = self.convert_to_standard_form(entry.labeled)
+                out_files[entry.type].write(json.dumps(out_json, ensure_ascii = False) + "\n")
         for t, f in out_files.items():
             f.close()
 
@@ -86,7 +90,8 @@ class RIR(object):
             if k in self.IGNORED_KEYS:
                 continue
 
-            new_k = k
+            # by default convert to lowercase
+            new_k = k.lower()
             if k in self.STANDARD_KEY_MAP:
                 new_k = self.STANDARD_KEY_MAP[k]
 
@@ -114,13 +119,11 @@ class RIR(object):
 
         with open(as_path, 'r', encoding='latin-1') as ans:
             for l in ans:
-                in_json = json.loads(l)
+                out_json = json.loads(l)
 
                 # Make sure not to add duplicates.
-                if self.is_other_org_entry(in_json):
+                if self.is_other_org_entry(out_json):
                     continue
-
-                out_json = self.convert_to_standard_form(in_json)
 
                 # Check for contact / org object references
                 for k, v in out_json.items():
@@ -148,8 +151,7 @@ class RIR(object):
             int_path = self.intm_json_path(out_folder, t)
             with open(int_path, 'r', encoding='latin-1') as ij:
                 for l in ij:
-                    in_json = json.loads(l)
-                    out_json = self.convert_to_standard_form(in_json)
+                    out_json = json.loads(l)
                     org_pocs = set()
 
                     if t == 'organisation':

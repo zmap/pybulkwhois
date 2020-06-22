@@ -14,6 +14,17 @@ from .file import BulkWHOISFile
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
 
+    # Make sure all the relevant environment keys are present
+    rirs_with_logins = ["APNIC", "LACNIC", "ARIN"]
+    have_all_logins = True
+    for rir in rirs_with_logins:
+        if not (rir + "_UID" in os.environ and rir + "_PWD" in os.environ):
+            have_all_logins = False
+            logging.debug(f"Missing uid/pwd for {rir} in the environment variables.")
+    if not have_all_logins:
+        logging.debug("Exiting.")
+        exit()
+
     # Configure output directory
     if (len(sys.argv) > 1):
         out_folder = sys.argv[1]
