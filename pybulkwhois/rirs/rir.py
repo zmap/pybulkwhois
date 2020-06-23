@@ -97,9 +97,16 @@ class RIR(object):
 
             out_json[new_k] = v
 
-        # make sure the leading AS is on the asn
-        if 'asn' in out_json and not out_json['asn'].startswith('AS'):
-            out_json['asn'] = 'AS' + out_json['asn']
+        # Handle some weird case nonsense
+        if 'asn' in out_json:
+            # If the "as" is lowercase, convert it to uppercase
+            out_json['asn'] = out_json['asn'].upper()
+            if not out_json['asn'].startswith('AS'):
+            # Otherwise, if it isn't there add it on
+            else:
+                out_json['asn'] = 'AS' + out_json['asn']
+        if 'source' in out_json:
+            out_json['source'] = out_json['source'].upper()
 
         return out_json
 
