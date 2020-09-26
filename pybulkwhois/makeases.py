@@ -30,10 +30,16 @@ if __name__ == "__main__":
         out_folder = sys.argv[1]
     else:
         out_folder = "out" # default
+
     logging.debug(f"Using {out_folder} as output directory.")
     if not os.path.isdir(out_folder):
         logging.debug(f'Making directory {out_folder}.')
         os.mkdir(out_folder)
+        
+    intermediate_folder = out_folder + "/intm"
+    if not os.path.isdir(intermediate_folder):
+        os.mkdir(intermediate_folder)
+
 
     # full_db is where we'll eventually write out all of the processed entries
     full_db = 'full_db.json'

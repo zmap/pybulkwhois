@@ -27,7 +27,7 @@ class RIR(object):
         '''
         Return the intermediate json path for this type.
         '''
-        return "%s/%s_%s.json" % (out_folder, self.NAME, t)
+        return "%s/intm/%s_%s.json" % (out_folder, self.NAME, t)
 
     def construct_intermediate_jsons(self, out_folder, types):
         '''
@@ -103,8 +103,8 @@ class RIR(object):
             out_json['asn'] = out_json['asn'].upper()
             if not out_json['asn'].startswith('AS'):
             # Otherwise, if it isn't there add it on
-            else:
                 out_json['asn'] = 'AS' + out_json['asn']
+                
         if 'source' in out_json:
             out_json['source'] = out_json['source'].upper()
 
