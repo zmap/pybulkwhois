@@ -16,11 +16,12 @@ if __name__ == "__main__":
 
     # Make sure all the relevant environment keys are present
     rirs_with_logins = ["APNIC", "LACNIC", "ARIN"]
+    logins = json.load(open('logins.json', 'r'))
     have_all_logins = True
     for rir in rirs_with_logins:
-        if not (rir + "_UID" in os.environ and rir + "_PWD" in os.environ):
+        if not (rir + "_UID" in logins.keys() and rir + "_PWD" in logins.keys()):
             have_all_logins = False
-            logging.debug(f"Missing uid/pwd for {rir} in the environment variables.")
+            logging.debug(f"Missing uid/pwd for {rir} in logins.json.")
     if not have_all_logins:
         logging.debug("Exiting.")
         exit()
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     if not os.path.isdir(out_folder):
         logging.debug(f'Making directory {out_folder}.')
         os.mkdir(out_folder)
-        
+
     intermediate_folder = out_folder + "/intm"
     if not os.path.isdir(intermediate_folder):
         os.mkdir(intermediate_folder)
