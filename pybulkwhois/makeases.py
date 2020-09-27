@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     # APNIC
     logging.debug("----- Processing APNIC -----")
-    apnic = APNIC(uid=os.environ["APNIC_UID"], pwd=os.environ["APNIC_PWD"])
+    apnic = APNIC(uid=logins["APNIC_UID"], pwd=logins["APNIC_PWD"])
     apnic.construct_intermediate_jsons(out_folder, types)
     apnic.add_to_full_db(out_folder, full_db, types)
 
@@ -71,14 +71,14 @@ if __name__ == "__main__":
 
     # LACNIC
     logging.debug("----- Processing LACNIC -----")
-    lacnic = LACNIC(os.environ["LACNIC_UID"], os.environ["LACNIC_PWD"])
+    lacnic = LACNIC(logins["LACNIC_UID"], logins["LACNIC_PWD"])
     lacnic.construct_intermediate_jsons(out_folder, types)
     lacnic.add_to_full_db(out_folder, full_db, types)
 
     # ARIN
     logging.debug("----- Processing ARIN -----")
     types = ['aut-num', 'organisation', 'person'] # ARIN wraps roles into person
-    arin = ARIN(os.environ["ARIN_UID"], os.environ["ARIN_PWD"])
+    arin = ARIN(logins["ARIN_UID"], logins["ARIN_PWD"])
     arin.construct_intermediate_jsons(out_folder, types)
     arin.add_to_full_db(out_folder, full_db, types)
 
