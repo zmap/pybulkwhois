@@ -8,6 +8,8 @@ from contextlib import closing
 
 from ..file import BulkWHOISFile
 
+ENCODING = 'utf-8'
+
 class RIR(object):
     IGNORED_KEYS   = []
     IGNORED_VALUES = []
@@ -38,7 +40,7 @@ class RIR(object):
         for t in types:
             t_file = self.get(t)
             out_path = self.intm_json_path(out_folder, t)
-            with open(out_path, 'w+', encoding='latin-1') as out:
+            with open(out_path, 'w+', encoding=ENCODING) as out:
                 for entry in t_file:
                     # Only write out objects with matching types - some of the RIRs
                     # include dummy objects/other info in these files.
@@ -58,7 +60,7 @@ class RIR(object):
         out_files = {}
         for t in types:
             out_path = self.intm_json_path(out_folder, t)
-            out_files[t] = open(out_path, 'w+', encoding='latin-1')
+            out_files[t] = open(out_path, 'w+', encoding=ENCODING)
         # afrinic and lacnic put all their data in one file, so we don't need to give it a specific type
         db_file = self.get()
         for entry in db_file:
@@ -124,7 +126,7 @@ class RIR(object):
         # map from org/contact handles to a list of asns that contain them
         handles_to_asns = {}
 
-        with open(as_path, 'r', encoding='latin-1') as ans:
+        with open(as_path, 'r', encoding=ENCODING) as ans:
             for l in ans:
                 out_json = json.loads(l)
 
@@ -156,7 +158,7 @@ class RIR(object):
             if t == 'aut-num':
                 continue
             int_path = self.intm_json_path(out_folder, t)
-            with open(int_path, 'r', encoding='latin-1') as ij:
+            with open(int_path, 'r', encoding=ENCODING) as ij:
                 for l in ij:
                     out_json = json.loads(l)
                     org_pocs = set()
@@ -172,7 +174,8 @@ class RIR(object):
                                     org_pocs.add(v)
 
                     elif t == 'person' or t == 'role':
-                        handle = out_json['pochandle']
+                        if 'pochandle' in out_json:
+                            handle = out_json['pochandle']
 
                     # If we noted that we cared about this handle, then loop over
                     # all the asns it was relevant to and add this object to their set
@@ -187,7 +190,7 @@ class RIR(object):
                                 handles_to_asns[p].add(asn)
 
         # Finally, write out all of the asn objects to the full db file.
-        with open(full_db_path, 'a+', encoding='latin-1') as db:
+        with open(full_db_path, 'a+', encoding=ENCODING) as db:
             for out_json in asn_objs.values():
                 db.write(json.dumps(out_json, ensure_ascii=False) + "\n")
         logging.debug("Added as#s to full db.")

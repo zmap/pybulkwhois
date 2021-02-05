@@ -11,8 +11,9 @@ class BulkWHOISFile(object):
         self.f.seek(0)
         for l in self.f:
             # For Lacnic and Apnic Latin American data bases, letters do not fit w/in utf-8 encoding
-            l = l.decode('latin-1')
-            if l.startswith("#") or l.startswith("%"):
+            if type(l) != str:
+                l = l.decode('latin-1')
+            if l.startswith("#") or l.startswith("%") or l.startswith("Query rate limit"):
                 continue
             if l == "\n" and lines:
                 yield BulkWHOISEntry(lines, self.ignored_keys, self.ignored_values)
