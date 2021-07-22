@@ -16,7 +16,7 @@ class RIPE(FTPRIR):
         "filter-set",
         "inet-rtr",
         "inet6num",
-        "inetnumz",
+        "inetnum",
         "irt",
         "key-cert",
         "mntner",
