@@ -189,6 +189,18 @@ class RIR(object):
                                     handles_to_asns[p] = set()
                                 handles_to_asns[p].add(asn)
 
+        # If any of these ASes represent blocks, duplicate them.
+        for asn, obj in asn_objs.items():
+            if 'asblock' in obj:
+                parts = obj['asblock'].split('-')
+                # If the asnumber was a range, duplicate this object for each as in the range
+                # that we don't have a different entry for. 
+                if len(asblock) == 2:
+                    as_range = ["AS" + str(i) for i in range(int(parts[0]), int(parts[1]) + 1)]
+                    for new_asn in as_range:
+                        if not new_asn in asn_objs:
+                            asn_objs[new_asn] = obj
+
         # Finally, write out all of the asn objects to the full db file.
         with open(full_db_path, 'a+', encoding=ENCODING) as db:
             for out_json in asn_objs.values():

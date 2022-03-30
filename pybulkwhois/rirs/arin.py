@@ -18,7 +18,7 @@ class ARIN(RIR):
     BASE_URL = "https://accountws.arin.net/public/secure/downloads/bulkwhois"
     NAME = "arin"
 
-    IGNORED_KEYS = ['ASNumber', 'CanAllocate']
+    IGNORED_KEYS = ['CanAllocate']
 
     # Map the standard types to the ARIN filenames
     SUPPORTED_TYPES = {
@@ -42,6 +42,7 @@ class ARIN(RIR):
         "OrgID": "orghandle",
         # Assorted
         "ASName": "name",
+        "ASNumber": "asblock",
         "OrgName": "org-name",
         "Source": "source",
         "RegDate": "created",
