@@ -2,6 +2,7 @@ import logging
 import json
 import os
 import sys
+import traceback
 
 from .rirs.ripe     import RIPE
 from .rirs.apnic    import APNIC
@@ -58,7 +59,7 @@ if __name__ == "__main__":
         ripe.construct_intermediate_jsons(out_folder, types)
         ripe.add_to_full_db(out_folder, full_db, types)
     except Exception as e:
-        print(type(e), e)
+        print(traceback.format_exc())
 
     # APNIC
     try:
@@ -67,7 +68,7 @@ if __name__ == "__main__":
         apnic.construct_intermediate_jsons(out_folder, types)
         apnic.add_to_full_db(out_folder, full_db, types)
     except Exception as e:
-        print(type(e), e)
+        print(traceback.format_exc())
 
     # AFRINIC
     try:
@@ -76,7 +77,7 @@ if __name__ == "__main__":
         afrinic.construct_intermediate_jsons(out_folder, types)
         afrinic.add_to_full_db(out_folder, full_db, types)
     except Exception as e:
-        print(type(e), e)
+        print(traceback.format_exc())
 
     # LACNIC
     try:
@@ -85,7 +86,7 @@ if __name__ == "__main__":
         lacnic.construct_intermediate_jsons(out_folder, types)
         lacnic.add_to_full_db(out_folder, full_db, types)
     except Exception as e:
-        print(type(e), e)
+        print(traceback.format_exc())
 
     # ARIN
     try:
@@ -95,6 +96,6 @@ if __name__ == "__main__":
         arin.construct_intermediate_jsons(out_folder, types)
         arin.add_to_full_db(out_folder, full_db, types)
     except Exception as e:
-        print(type(e), e)
+        print(traceback.format_exc())
 
     logging.debug(f"All AS objects written out to {out_folder}/{full_db}.")
