@@ -190,7 +190,8 @@ class RIR(object):
                                 handles_to_asns[p].add(asn)
 
         # If any of these ASes represent blocks, duplicate them.
-        for asn, obj in asn_objs.items():
+        for asn in list(asn_objs.keys()).copy():
+            obj = asn_objs[asn]
             if 'asblock' in obj:
                 parts = obj['asblock'].split('-')
                 # If the asnumber was a range, duplicate this object for each as in the range
