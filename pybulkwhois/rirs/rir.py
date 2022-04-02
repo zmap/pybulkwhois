@@ -195,7 +195,7 @@ class RIR(object):
                 parts = obj['asblock'].split('-')
                 # If the asnumber was a range, duplicate this object for each as in the range
                 # that we don't have a different entry for. 
-                if len(asblock) == 2:
+                if len(parts) == 2:
                     as_range = ["AS" + str(i) for i in range(int(parts[0]), int(parts[1]) + 1)]
                     for new_asn in as_range:
                         if not new_asn in asn_objs:
