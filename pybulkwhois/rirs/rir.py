@@ -198,9 +198,14 @@ class RIR(object):
                 # that we don't have a different entry for. 
                 if len(parts) == 2:
                     as_range = ["AS" + str(i) for i in range(int(parts[0]), int(parts[1]) + 1)]
+                    # If there are more than 1,000 ASes in this block, it's probably not a real 
+                    # block of ASes. 
+                    if len(as_range) > 1000:
+                        continue
                     for new_asn in as_range:
                         if not new_asn in asn_objs:
-                            asn_objs[new_asn] = obj
+                            asn_objs[new_asn] = obj.copy()
+                            asn_objs[new_asn]["asn"] = new_asn
 
         # Finally, write out all of the asn objects to the full db file.
         with open(full_db_path, 'a+', encoding=ENCODING) as db:
