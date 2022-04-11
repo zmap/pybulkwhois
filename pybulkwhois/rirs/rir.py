@@ -198,9 +198,9 @@ class RIR(object):
                 # that we don't have a different entry for. 
                 if len(parts) == 2:
                     as_range = ["AS" + str(i) for i in range(int(parts[0]), int(parts[1]) + 1)]
-                    # If there are more than 1,000 ASes in this block, it's probably not a real 
+                    # If there are more than 10,000 ASes in this block, it's probably not a real 
                     # block of ASes. 
-                    if len(as_range) > 1000:
+                    if len(as_range) > 10000:
                         continue
                     for new_asn in as_range:
                         if not new_asn in asn_objs:
