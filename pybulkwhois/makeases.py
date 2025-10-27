@@ -56,8 +56,8 @@ if __name__ == "__main__":
     try:
         logging.debug("----- Processing RIPE -----")
         ripe = RIPE()
-    #     ripe.construct_intermediate_jsons(out_folder, types)
-    #     ripe.add_to_full_db(out_folder, full_db, types)
+        ripe.construct_intermediate_jsons(out_folder, types)
+        ripe.add_to_full_db(out_folder, full_db, types)
     except Exception as e:
         print(traceback.format_exc())
 
