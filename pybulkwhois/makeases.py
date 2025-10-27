@@ -53,40 +53,40 @@ if __name__ == "__main__":
     types = ['aut-num', 'organisation', 'person', 'role']
 
     # RIPE
-    # try:
-    #     logging.debug("----- Processing RIPE -----")
-    #     ripe = RIPE()
-    # #     ripe.construct_intermediate_jsons(out_folder, types)
-    # #     ripe.add_to_full_db(out_folder, full_db, types)
-    # except Exception as e:
-    #     print(traceback.format_exc())
+    try:
+        logging.debug("----- Processing RIPE -----")
+        ripe = RIPE()
+    #     ripe.construct_intermediate_jsons(out_folder, types)
+    #     ripe.add_to_full_db(out_folder, full_db, types)
+    except Exception as e:
+        print(traceback.format_exc())
 
-    # # APNIC
-    # try:
-    #     logging.debug("----- Processing APNIC -----")
-    #     apnic = APNIC(uid=logins["APNIC_UID"], pwd=logins["APNIC_PWD"])
-    #     apnic.construct_intermediate_jsons(out_folder, types)
-    #     apnic.add_to_full_db(out_folder, full_db, types)
-    # except Exception as e:
-    #     print(traceback.format_exc())
+    # APNIC
+    try:
+        logging.debug("----- Processing APNIC -----")
+        apnic = APNIC(uid=logins["APNIC_UID"], pwd=logins["APNIC_PWD"])
+        apnic.construct_intermediate_jsons(out_folder, types)
+        apnic.add_to_full_db(out_folder, full_db, types)
+    except Exception as e:
+        print(traceback.format_exc())
 
-    # # AFRINIC
-    # try:
-    #     logging.debug("----- Processing AFRINIC -----")
-    #     afrinic = AFRINIC()
-    #     afrinic.construct_intermediate_jsons(out_folder, types)
-    #     afrinic.add_to_full_db(out_folder, full_db, types)
-    # except Exception as e:
-    #     print(traceback.format_exc())
+    # AFRINIC
+    try:
+        logging.debug("----- Processing AFRINIC -----")
+        afrinic = AFRINIC()
+        afrinic.construct_intermediate_jsons(out_folder, types)
+        afrinic.add_to_full_db(out_folder, full_db, types)
+    except Exception as e:
+        print(traceback.format_exc())
 
-    # # LACNIC
-    # try:
-    #     logging.debug("----- Processing LACNIC -----")
-    #     lacnic = LACNIC(logins["LACNIC_UID"], logins["LACNIC_PWD"])
-    #     lacnic.construct_intermediate_jsons(out_folder, types)
-    #     lacnic.add_to_full_db(out_folder, full_db, types)
-    # except Exception as e:
-    #     print(traceback.format_exc())
+    # LACNIC
+    try:
+        logging.debug("----- Processing LACNIC -----")
+        lacnic = LACNIC(logins["LACNIC_UID"], logins["LACNIC_PWD"])
+        lacnic.construct_intermediate_jsons(out_folder, types)
+        lacnic.add_to_full_db(out_folder, full_db, types)
+    except Exception as e:
+        print(traceback.format_exc())
 
     # ARIN
     try:
