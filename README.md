@@ -1,13 +1,34 @@
-## Python Bulk WHOIS
-
+# Python Bulk WHOIS
 
 This is a Python library that allows interacting with the bulk WHOIS data that
 RIRs (e.g., RIPE, ARIN, AFRINIC) provide about the ownership of ASes and netblocks.
 
-Run from top level directory using:
-> python2 -m pybulkwhois.target
+0. One-time environment setup, from the top-level directory
 
-### License and Copyright
+```shell
+python3 -m venv venv;
+source venv/bin/activate;
+pip install -r requirements.txt
+```
+
+Ensure you've created a `logins.json` in the top-level directory with your RIR credentials of the form:
+
+```json
+{
+    "LACNIC_UID": "ABC",
+    "LACNIC_PWD": "123",
+    "APNIC_UID": "ABC",
+    "APNIC_PWD": "123",
+    "ARIN_UID": "ABC",
+    "ARIN_PWD": "123"
+}
+```
+
+1. Run from top level directory using:
+
+> python -m pybulkwhois.makeases
+
+## License and Copyright
 
 PyBulkWHOIS Copyright 2018 Regents of the University of Michigan
 
