@@ -134,7 +134,7 @@ class ARIN(RIR):
             for c in OTHER_RIR_COMMENTS:
                 if c in in_json['remarks']:
                     return True
-        if 'RIPE-ASNBLOCK' in in_json['name']:
+        if 'RIPE-ASNBLOCK' in in_json['name'] or 'RIPE-ASBLOCK' in in_json['name']:
             return True
         return False
 
