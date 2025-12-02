@@ -92,7 +92,7 @@ if __name__ == "__main__":
     try:
         logging.debug("----- Processing ARIN -----")
         types = ['aut-num', 'organisation', 'person'] # ARIN wraps roles into person
-        arin = ARIN(logins["ARIN_UID"], logins["ARIN_PWD"])
+        arin = ARIN(logins["ARIN_API"])
         arin.construct_intermediate_jsons(out_folder, types)
         arin.add_to_full_db(out_folder, full_db, types)
     except Exception as e:

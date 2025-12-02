@@ -6,6 +6,8 @@ import urllib.request as request
 import tempfile
 import logging
 import json
+import zipfile
+
 
 from contextlib import closing
 from bs4 import BeautifulSoup
@@ -14,8 +16,13 @@ from .rir import RIR
 
 class ARIN(RIR):
 
-    LOGIN_URL = "https://accountws.arin.net/public/seam/resource/rest/auth/login"
-    BASE_URL = "https://accountws.arin.net/public/secure/downloads/bulkwhois"
+    def get_url(self, name=None):
+        if name is not None:
+            return f"https://accountws.arin.net/public/rest/downloads/bulkwhois/{name}.zip?apikey={self.api_key}"
+        else:
+            return f"https://accountws.arin.net/public/rest/downloads/bulkwhois?apikey={self.api_key}"
+        
+
     NAME = "arin"
 
     IGNORED_KEYS = ['CanAllocate']
@@ -25,6 +32,13 @@ class ARIN(RIR):
         "aut-num": "asns.txt",
         "organisation": "orgs.txt",
         "person": "pocs.txt"
+    }
+
+    # Map the standard types to the ARIN record to request
+    TYPE_TO_ARIN_RECORD = {
+        "aut-num": "asns",
+        "organisation": "orgs",
+        "person": "pocs"
     }
 
     # Map the standard types to ARIN's special names for them
@@ -62,34 +76,41 @@ class ARIN(RIR):
         "OfficePhone": "phone",
     }
 
-    def __init__(self, uid=None, pwd=None):
-        self.uid = uid
-        self.pwd = pwd
+    def __init__(self, api_key=None):
+        self.api_key = api_key
 
     def get_raw(self, name=None):
         if name not in self.SUPPORTED_TYPES:
             raise Exception("invalid file type requested")
-        path = self.BASE_URL + "/" + self.SUPPORTED_TYPES[name]
+         # Create a temporary directory
+        temp_dir = tempfile.mkdtemp()
+        zip_path = os.path.join(temp_dir, "arin_bulkwhois.zip")
 
-        # First log in to get the relevant cookie.
-        session = requests.session()
-        headers = {"Content-Type": "application/json"}
-        logged_in_raw = session.post(self.LOGIN_URL, headers=headers, data=json.dumps({
-            "username":self.uid,
-            "password":self.pwd
-        }))
-        cookie = list(logged_in_raw.cookies.get_dict().items())[0]
-        cookie_val = cookie[0] + "=" + cookie[1]
+        url = self.get_url(self.TYPE_TO_ARIN_RECORD[name])
+        print(f"Downloading from {url} ...")
+        response = requests.get(url)
+        response.raise_for_status()  # raise exception if download failed
+
+        with open(zip_path, "wb") as f:
+            f.write(response.content)
+        # we'll need to download the zip file for the type, then extract it, and return the arin_db.txt
+        with zipfile.ZipFile(zip_path, "r") as zip_ref:
+            zip_ref.extractall(temp_dir)
+
+        extracted_path = os.path.join(temp_dir, "arin_db.txt")
+        renamed_path = os.path.join(temp_dir, f"{self.TYPE_TO_ARIN_RECORD[name]}.txt")
+
+        # Rename the extracted file
+        if os.path.exists(extracted_path):
+            os.rename(extracted_path, renamed_path)
+            print(f"Extracted and renamed file saved at: {renamed_path}")
+        else:
+            raise FileNotFoundError("arin_db.txt not found in the downloaded ZIP file")
 
         retv = tempfile.NamedTemporaryFile(delete=False)
-
-        logging.debug("will attempt to download %s", path)
-        req = request.Request(path)
-        req.add_header("Cookie", cookie_val)
-        with closing(request.urlopen(req)) as f:
+        with open(renamed_path, "rb") as f:
             shutil.copyfileobj(f, retv)
-        logging.debug("uncompressed content saved to %s", retv.name)
-        retv.seek(0)
+            retv.seek(0)
         return retv
 
 
@@ -113,11 +134,11 @@ class ARIN(RIR):
             for c in OTHER_RIR_COMMENTS:
                 if c in in_json['remarks']:
                     return True
-        if 'RIPE-ASNBLOCK' in in_json['name']:
+        if 'RIPE-ASNBLOCK' in in_json['name'] or 'RIPE-ASBLOCK' in in_json['name']:
             return True
         return False
 
 if __name__ == '__main__':
     print("Running arin.py")
-    l = ARIN(os.environ["ARIN_UID"], os.environ["ARIN_PWD"])
+    l = ARIN(os.environ["ARIN_API"])
     print(l.get_raw())
