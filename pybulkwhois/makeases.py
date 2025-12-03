@@ -16,13 +16,18 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
 
     # Make sure all the relevant environment keys are present
-    rirs_with_logins = ["APNIC", "LACNIC", "ARIN"]
+    rirs_with_logins = ["APNIC", "LACNIC"]
+    rirs_with_api_keys = ["ARIN"]
     logins = json.load(open('logins.json', 'r'))
     have_all_logins = True
     for rir in rirs_with_logins:
         if not (rir + "_UID" in logins.keys() and rir + "_PWD" in logins.keys()):
             have_all_logins = False
             logging.debug(f"Missing uid/pwd for {rir} in logins.json.")
+    for rir in rirs_with_api_keys:
+        if not (rir + "_API" in logins.keys()):
+            have_all_logins = False
+            logging.debug(f"Missing api key for {rir} in logins.json.")
     if not have_all_logins:
         logging.debug("Exiting.")
         exit()
