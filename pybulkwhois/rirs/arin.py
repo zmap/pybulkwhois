@@ -74,6 +74,7 @@ class ARIN(RIR):
         "OrgDNSHandle": "dns-c",
         "Mailbox": "e-mail",
         "OfficePhone": "phone",
+        "Street": "address",
     }
 
     def __init__(self, api_key=None):
